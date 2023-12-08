@@ -125,7 +125,7 @@
                                                   }];
 }
 
-- (void)webView:(WKWebView *)webView didStartProvisionalNavigation:(WKNavigation *)navigation {
+- (void)webView:(WKWebView *)webView didCommitNavigation:(WKNavigation *)navigation {
   [self.navigationDelegateAPI didStartProvisionalNavigationForDelegate:self
                                                                webView:webView
                                                                    URL:webView.URL.absoluteString
