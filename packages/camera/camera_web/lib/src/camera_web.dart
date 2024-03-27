@@ -199,21 +199,14 @@ class CameraPlugin extends CameraPlatform {
     bool enableAudio = false,
   }) async {
     try {
-      if (!camerasMetadata.containsKey(cameraDescription)) {
-        throw PlatformException(
-          code: CameraErrorCode.missingMetadata.toString(),
-          message:
-              'Missing camera metadata. Make sure to call `availableCameras` before creating a camera.',
-        );
-      }
-
       final int textureId = _textureCounter++;
 
-      final CameraMetadata cameraMetadata = camerasMetadata[cameraDescription]!;
+      final CameraMetadata? cameraMetadata = camerasMetadata[cameraDescription];
 
-      final CameraType? cameraType = cameraMetadata.facingMode != null
-          ? mapFacingModeToCameraType(cameraMetadata.facingMode!)
-          : null;
+      final String? facingMode = cameraMetadata?.facingMode;
+      final CameraType cameraType = facingMode != null
+          ? mapFacingModeToCameraType(facingMode)
+          : mapLensDirectionToCameraType(cameraDescription.lensDirection);
 
       // Use the highest resolution possible
       // if the resolution preset is not specified.
@@ -228,15 +221,14 @@ class CameraPlugin extends CameraPlatform {
         options: CameraOptions(
           audio: AudioConstraints(enabled: enableAudio),
           video: VideoConstraints(
-            facingMode:
-                cameraType != null ? FacingModeConstraint(cameraType) : null,
+            facingMode: FacingModeConstraint(cameraType),
             width: VideoSizeConstraint(
               ideal: videoSize.width.toInt(),
             ),
             height: VideoSizeConstraint(
               ideal: videoSize.height.toInt(),
             ),
-            deviceId: cameraMetadata.deviceId,
+            deviceId: cameraMetadata?.deviceId,
           ),
         ),
       );
