@@ -1898,11 +1898,11 @@ abstract class TestCameraControlHostApi {
 
   Future<void> setZoomRatio(int identifier, double ratio);
 
-  Future<int> startFocusAndMetering(int identifier, int focusMeteringActionId);
+  Future<int?> startFocusAndMetering(int identifier, int focusMeteringActionId);
 
   Future<void> cancelFocusAndMetering(int identifier);
 
-  Future<int> setExposureCompensationIndex(int identifier, int index);
+  Future<int?> setExposureCompensationIndex(int identifier, int index);
 
   static void setup(TestCameraControlHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
@@ -1977,7 +1977,7 @@ abstract class TestCameraControlHostApi {
           final int? arg_focusMeteringActionId = (args[1] as int?);
           assert(arg_focusMeteringActionId != null,
               'Argument for dev.flutter.pigeon.CameraControlHostApi.startFocusAndMetering was null, expected non-null int.');
-          final int output = await api.startFocusAndMetering(
+          final int? output = await api.startFocusAndMetering(
               arg_identifier!, arg_focusMeteringActionId!);
           return <Object?>[output];
         });
@@ -2027,7 +2027,7 @@ abstract class TestCameraControlHostApi {
           final int? arg_index = (args[1] as int?);
           assert(arg_index != null,
               'Argument for dev.flutter.pigeon.CameraControlHostApi.setExposureCompensationIndex was null, expected non-null int.');
-          final int output = await api.setExposureCompensationIndex(
+          final int? output = await api.setExposureCompensationIndex(
               arg_identifier!, arg_index!);
           return <Object?>[output];
         });
@@ -2065,7 +2065,8 @@ abstract class TestFocusMeteringActionHostApi {
   static const MessageCodec<Object?> codec =
       _TestFocusMeteringActionHostApiCodec();
 
-  void create(int identifier, List<MeteringPointInfo?> meteringPointInfos);
+  void create(int identifier, List<MeteringPointInfo?> meteringPointInfos,
+      bool? disableAutoCancel);
 
   static void setup(TestFocusMeteringActionHostApi? api,
       {BinaryMessenger? binaryMessenger}) {
@@ -2090,7 +2091,9 @@ abstract class TestFocusMeteringActionHostApi {
               (args[1] as List<Object?>?)?.cast<MeteringPointInfo?>();
           assert(arg_meteringPointInfos != null,
               'Argument for dev.flutter.pigeon.FocusMeteringActionHostApi.create was null, expected non-null List<MeteringPointInfo?>.');
-          api.create(arg_identifier!, arg_meteringPointInfos!);
+          final bool? arg_disableAutoCancel = (args[2] as bool?);
+          api.create(
+              arg_identifier!, arg_meteringPointInfos!, arg_disableAutoCancel);
           return <Object?>[];
         });
       }
@@ -2138,7 +2141,8 @@ abstract class TestMeteringPointHostApi {
       TestDefaultBinaryMessengerBinding.instance;
   static const MessageCodec<Object?> codec = StandardMessageCodec();
 
-  void create(int identifier, double x, double y, double? size);
+  void create(
+      int identifier, double x, double y, double? size, int cameraInfoId);
 
   double getDefaultPointSize();
 
@@ -2168,7 +2172,11 @@ abstract class TestMeteringPointHostApi {
           assert(arg_y != null,
               'Argument for dev.flutter.pigeon.MeteringPointHostApi.create was null, expected non-null double.');
           final double? arg_size = (args[3] as double?);
-          api.create(arg_identifier!, arg_x!, arg_y!, arg_size);
+          final int? arg_cameraInfoId = (args[4] as int?);
+          assert(arg_cameraInfoId != null,
+              'Argument for dev.flutter.pigeon.MeteringPointHostApi.create was null, expected non-null int.');
+          api.create(
+              arg_identifier!, arg_x!, arg_y!, arg_size, arg_cameraInfoId!);
           return <Object?>[];
         });
       }
