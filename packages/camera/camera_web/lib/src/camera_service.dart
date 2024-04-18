@@ -44,8 +44,7 @@ class CameraService {
     }
 
     try {
-      final Map<String, dynamic> constraints =
-          options.orientToWindow(window).toJson();
+      final Map<String, dynamic> constraints = options.toJson();
       return await mediaDevices.getUserMedia(constraints);
     } on html.DomException catch (e) {
       throw _mapDomException(cameraId, e.name);
