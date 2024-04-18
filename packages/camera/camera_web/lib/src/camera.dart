@@ -165,7 +165,7 @@ class Camera {
     videoElement = html.VideoElement();
 
     divElement = html.DivElement()
-      ..style.setProperty('object-fit', 'cover')
+      ..style.setProperty('object-fit', 'contain')
       ..append(videoElement);
 
     ui_web.platformViewRegistry.registerViewFactory(
@@ -642,6 +642,6 @@ class Camera {
       ..pointerEvents = 'none'
       ..width = '100%'
       ..height = '100%'
-      ..objectFit = 'cover';
+      ..objectFit = 'contain';
   }
 }
