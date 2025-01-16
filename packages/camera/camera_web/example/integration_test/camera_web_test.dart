@@ -731,61 +731,42 @@ void main() {
               maxResolutionSize.height.toInt());
           expect(camera.options.video.deviceId, cameraMetadata.deviceId);
         });
-      });
 
-      testWidgets(
-          'throws CameraException '
-          'with missingMetadata error '
-          'if there is no metadata '
-          'for the given camera description', (WidgetTester tester) async {
-        expect(
-          () => CameraPlatform.instance.createCamera(
+        testWidgets(
+            'if there is no metadata '
+            'for the given camera description', (WidgetTester tester) async {
+          when(
+            () => cameraService.mapResolutionPresetToSize(ResolutionPreset.max),
+          ).thenReturn(maxResolutionSize);
+
+          final int cameraId = await CameraPlatform.instance.createCamera(
             const CameraDescription(
               name: 'name',
               lensDirection: CameraLensDirection.back,
               sensorOrientation: 0,
             ),
             ResolutionPreset.ultraHigh,
-          ),
-          throwsA(
-            isA<CameraException>().having(
-              (CameraException e) => e.code,
-              'code',
-              CameraErrorCode.missingMetadata.toString(),
+          );
+          expect(
+            (CameraPlatform.instance as CameraPlugin).cameras[cameraId],
+            isA<Camera>().having(
+              (Camera camera) => camera.options,
+              'options',
+              CameraOptions(
+                audio: const AudioConstraints(),
+                video: VideoConstraints(
+                  facingMode: FacingModeConstraint(CameraType.user),
+                  width: VideoSizeConstraint(
+                    ideal: maxResolutionSize.width.toInt(),
+                  ),
+                  height: VideoSizeConstraint(
+                    ideal: maxResolutionSize.height.toInt(),
+                  ),
+                ),
+              ),
             ),
-          ),
-        );
-      });
-
-      testWidgets(
-          'throws CameraException '
-          'with missingMetadata error '
-          'if there is no metadata '
-          'for the given camera description '
-          'using createCameraWithSettings', (WidgetTester tester) async {
-        expect(
-          () => CameraPlatform.instance.createCameraWithSettings(
-            const CameraDescription(
-              name: 'name',
-              lensDirection: CameraLensDirection.back,
-              sensorOrientation: 0,
-            ),
-            const MediaSettings(
-              resolutionPreset: ResolutionPreset.low,
-              fps: 15,
-              videoBitrate: 200000,
-              audioBitrate: 32000,
-              enableAudio: true,
-            ),
-          ),
-          throwsA(
-            isA<CameraException>().having(
-              (CameraException e) => e.code,
-              'code',
-              CameraErrorCode.missingMetadata.toString(),
-            ),
-          ),
-        );
+          );
+        });
       });
     });
 
