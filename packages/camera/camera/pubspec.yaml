@@ -14,17 +14,21 @@ flutter:
   plugin:
     platforms:
       android:
-        default_package: camera_android_camerax
+        default_package: camera_android
       ios:
         default_package: camera_avfoundation
       web:
         default_package: camera_web
 
 dependencies:
-  camera_android_camerax: ^0.6.5
+  camera_android: 0.10.10
   camera_avfoundation: ^0.9.15
   camera_platform_interface: ^2.6.0
-  camera_web: ^0.3.3
+  camera_web:
+    git:
+      url: https://github.com/zliide/flutter_packages.git
+      ref: 367b2a63a
+      path: packages/camera/camera_web
   flutter:
     sdk: flutter
   flutter_plugin_android_lifecycle: ^2.0.2
